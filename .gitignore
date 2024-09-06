@@ -1,0 +1,7 @@
+*.tar.gz
+*.xz
+*.zst
+/*/pkg/
+/*/src/
+*.log
+/*/elmerfem/*

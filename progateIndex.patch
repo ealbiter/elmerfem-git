@@ -1,0 +1,122 @@
+diff --unified --recursive --text --color old/ElmerGUI/Application/src/meshutils.cpp new/ElmerGUI/Application/src/meshutils.cpp
+--- old/ElmerGUI/Application/src/meshutils.cpp	2020-11-10 13:52:44.000000000 -0600
++++ new/ElmerGUI/Application/src/meshutils.cpp	2021-04-15 16:36:52.076868857 -0500
+@@ -1388,21 +1388,106 @@
+       // set index
+       surf->setIndex(index);
+ 
+-      // propagate index
++      // propagate index L1
+       for(int j=0; j < surf->getEdges(); j++) {
+-	int k = surf->getEdgeIndex(j);
+-	edge_t *edge = mesh->getEdge(k);
+-
+-	// skip sharp edges
+-	if(!edge->isSharp()) {
+-	  for(int m=0; m < edge->getSurfaces(); m++) {
+-	    int n = edge->getSurfaceIndex(m);
+-	    propagateIndex(mesh, index, n);
+-	  }
+-	}
++          int k = surf->getEdgeIndex(j);
++          edge_t *edge = mesh->getEdge(k);
++          
++          // skip sharp edges
++          if(!edge->isSharp()) {
++              for(int m=0; m < edge->getSurfaces(); m++) {
++                  int n = edge->getSurfaceIndex(m);
++                  surface_t *surf2 = mesh->getSurface(n);
++                  
++                  // index is ok
++                  if(!surf2->getSelected() || (surf2->getIndex() != UNKNOWN) 
++                      || (surf2->getNature() != PDE_BOUNDARY) ) continue;
++                  
++                  // set index
++                  surf2->setIndex(index);
++                  // propagate index L2
++                  for(int o=0; o < surf2->getEdges(); o++) {
++                      int p = surf2->getEdgeIndex(o);
++                      edge_t *edge2 = mesh->getEdge(p);
++                      
++                      // skip sharp edges
++                      if(!edge2->isSharp()) {
++                          for(int q=0; q < edge2->getSurfaces(); q++) {
++                              int r = edge2->getSurfaceIndex(q);
++                              surface_t *surf3 = mesh->getSurface(r);
++                              
++                              // index is ok
++                              if(!surf3->getSelected() || (surf3->getIndex() != UNKNOWN) 
++                                  || (surf3->getNature() != PDE_BOUNDARY) ) continue;
++                              
++                              // set index
++                              surf3->setIndex(index);
++                              
++                              // propagate index L3
++                              for(int s=0; s < surf3->getEdges(); s++) {
++                                  int t = surf3->getEdgeIndex(s);
++                                  edge_t *edge3 = mesh->getEdge(t);
++                                  
++                                  // skip sharp edges
++                                  if(!edge3->isSharp()) {
++                                      for(int u=0; u < edge3->getSurfaces(); u++) {
++                                          int v = edge3->getSurfaceIndex(u);
++                                          surface_t *surf4 = mesh->getSurface(v);
++                                          
++                                          // index is ok
++                                          if(!surf4->getSelected() || (surf4->getIndex() != UNKNOWN) 
++                                              || (surf4->getNature() != PDE_BOUNDARY) ) continue;
++                                          
++                                          // set index
++                                          surf4->setIndex(index);
++                                          
++                                          // propagate index L4
++                                          for(int w=0; w < surf4->getEdges(); w++) {
++                                              int x = surf4->getEdgeIndex(w);
++                                              edge_t *edge4 = mesh->getEdge(x);
++                                              
++                                              // skip sharp edges
++                                              if(!edge4->isSharp()) {
++                                                  for(int y=0; y < edge4->getSurfaces(); y++) {
++                                                      int z = edge4->getSurfaceIndex(y);
++                                                      surface_t *surf5 = mesh->getSurface(z);
++                                                      
++                                                      // index is ok
++                                                      if(!surf5->getSelected() || (surf5->getIndex() != UNKNOWN) 
++                                                          || (surf5->getNature() != PDE_BOUNDARY) ) continue;
++                                                      
++                                                      // set index
++                                                      surf5->setIndex(index);
++                                                      
++                                                      // propagate index L5 recursively
++                                                      for(int ww=0; ww < surf5->getEdges(); ww++) {
++                                                          int xx = surf5->getEdgeIndex(ww);
++                                                          edge_t *edge5 = mesh->getEdge(xx);
++                                                          
++                                                          // skip sharp edges
++                                                          if(!edge5->isSharp()) {
++                                                              for(int yy=0; yy < edge5->getSurfaces(); yy++) {
++                                                                  int zz = edge5->getSurfaceIndex(yy);
++                                                                  //This recursive call eventually will cause a 
++                                                                  //stack overflow, depending on the mesh size
++                                                                  propagateIndex(mesh, index, zz);
++                                                            }
++                                                        }
++                                                    }
++                                                }
++                                            }
++                                        }
++                                    }
++                                }
++                            }
++                        }
++                    }
++                }
++            }
++        }   
+       }
+     }
+-  };
++};
+   
+   // reset bc-indices:
+   int count = 0;
