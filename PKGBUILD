@@ -158,7 +158,7 @@ conflicts=('elmerfem')
 ((!DISABLE_QWT))             && depends+=('qwt')
 ((!DISABLE_MPI))             && depends+=('openmpi')
 if((!DISABLE_NETCFD)); then
-  ((!DISABLE_MPI))             && depends+=('netcdf-fortran-openmpi') || depends+=('netcdf-fortran')
+  ((!DISABLE_MPI))             && depends+=('netcdf-fortran-openmpi' 'hdf5-openmpi') || depends+=('netcdf-fortran' 'hdf5')
 fi
 ((!DISABLE_MP))              && depends+=('openmp')
 ((!DISABLE_PARAVIEW))        && depends+=('paraview')
