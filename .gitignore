@@ -4,4 +4,4 @@
 /*/pkg/
 /*/src/
 *.log
-/*/elmerfem/*
+elmerfem/*

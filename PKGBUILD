@@ -53,8 +53,8 @@ _fragment=${FRAGMENT:-#branch=devel}
 ((ENABLE_DEBUG))    && _build_type=Debug  || _build_type=Relase
 
 ((DISABLE_ALL))       && eval DISABLE_{TRILINOS,MMG,ELMERICE,CONTRIB,LUA,GUI,MPI}=1
-((!DISABLE_TRILINOS)) && eval DISABLE_ZOLTAN=0                  # Trilinos contains the Zoltan library
-((!DISABLE_ZOLTAN))   && eval DISABLE_TRILINOS=0                # Zoltan libray is contained in Trilinos
+#((!DISABLE_TRILINOS)) && eval DISABLE_ZOLTAN=0                  # Trilinos contains the Zoltan library
+#((!DISABLE_ZOLTAN))   && eval DISABLE_TRILINOS=0                # Zoltan libray is contained in Trilinos
 ((DISABLE_TRILINOS))  && _use_trilinos=OFF || _use_trilinos=ON  # Disable Trilinos - linear system solver (Experimental)
 ((DISABLE_MMG))       && _use_mmg=OFF      || _use_mmg=ON       # Disable MMG - dynamic remeshing
 ((DISABLE_CONTRIB))   && _use_contrib=OFF  || _use_contrib=ON   # Disable multishell solver for composite lamitanes
@@ -134,7 +134,7 @@ _CMAKE_FLAGS+=(
                                   )
 pkgname=elmerfem-git
 _pkgname=elmerfem
-pkgver=9.0
+pkgver=9.0.r3132.g30dfce537
 pkgrel=1
 pkgdesc="A finite element software for multiphysical problems"
 arch=('x86_64')
@@ -170,7 +170,7 @@ fi
                                         'liblas' 'adios2' 'libharu' 'cgns' 'eigen' 'utf8cpp' 'fast_float')
 # AUR
 ((!DISABLE_MMG))             && depends+=('mmg')
-((!DISABLE_TRILINOS))        && depends+=('trilinos')
+((!DISABLE_TRILINOS || !DISABLE_ZOLTAN))        && depends+=('trilinos')
 ((!DISABLE_MUMPS))           && depends+=('mumps')
 ((!DISABLE_HYPRE))           && depends+=('hypre')
 
