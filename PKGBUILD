@@ -35,7 +35,6 @@ if((!DISABLE_AUTOCONFIG)); then
   #DISABLE_ROCALUTION
   DISABLE_OCC=1
   DISABLE_VTK=1
-  # VTK also needs MPI.
   DISABLE_MPI=0
   DISABLE_MUMPS=1
   DISABLE_HYPRE=1
@@ -78,7 +77,7 @@ _fragment=${FRAGMENT:-#branch=devel}
 ((DISABLE_PARAVIEW)) && _use_paraview=OFF || _use_paraview=ON  # Disable ParaView - GUI post-process exporter
 ((DISABLE_QWT))      && _use_qwt=OFF      || _use_qwt=ON       # Disable QWT - GUI convergence monitoring
 ((DISABLE_VTK))      && _use_vtk=OFF      || _use_vtk=ON       # Disable VTK - GUI post-process Widget and exporter
-
+((!DISABLE_VTK))     && eval DISABLE_MPI=0                     # VTK also needs MPI
 ((DISABLE_MPI))      && _use_mpi=OFF      || _use_mpi=ON       # Disable OpenMPI parallelization
 # Require OpenMPI
 ((DISABLE_MPI))      && eval DISABLE_{MUMPS,HYPRE}=1
@@ -164,7 +163,7 @@ fi
 ((!DISABLE_PARAVIEW))        && depends+=('paraview')
 ((!DISABLE_OCC))             && depends+=('opencascade')  # opencascade
 #VTK deps
-((!DISABLE_VTK))             && depends+=('vtk' 'tbb' 'openmpi' 'freetype2' 'qt5-base' 'fmt' 'glew' 'pugixml' \
+((!DISABLE_VTK))             && depends+=('vtk' 'tbb' 'freetype2' 'qt5-base' 'fmt' 'glew' 'pugixml' \
                                             'libxcursor' 'mariadb-libs' 'postgresql-libs' 'jdk11-openjdk')
 ((!DISABLE_VTK))             && makedepends+=('cli11' 'ospray' 'openxr' 'openvr' 'python-mpi4py' 'boost' 'pdal' 'opencascade' \
                                         'liblas' 'adios2' 'libharu' 'cgns' 'eigen' 'utf8cpp' 'fast_float')
