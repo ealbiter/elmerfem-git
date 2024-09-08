@@ -5,16 +5,19 @@
 # Contributor:  saxonbeta <saxonbeta [[at]] gmail _dot com
 # Contributor: Randy Heydon <randy dot heydon at clockworklab dot net>
 
+# Race conditions due to parallel compilation
+# If parallel compilation fails due to race conditions, define MAKEFLAGS=-j1 to MAKEFLAGS=-j24 (try and error).
+# example: yay -S elmerfem-git -mflags=MAKEFLAGS=-j16
+
 # Configuration:
 # Use: makepkg DISABLE_AUTOCONFIG=1 VAR1=0 VAR2=1 to enable(1) disable(0) a feature
 # Use: {yay,paru} --mflags=DISABLE_AUTOCONFIG=1,VAR1=0,VAR2=1
 # Use: aurutils --margs=DISABLE_AUTOCONFIG=1,VAR1=0,VAR2=1
 # Use: DISABLE_AUTOCONFIG=1 VAR1=0 VAR2=1 pamac
-# If parallel compilation fails due to race conditions, define NJOBS from 1 to ~24 jobs (try and error).
 
 # Build using a working configuration that not depens on other AUR packages
 # Use DISABLE_AUTOCONFIG=1 to build using all the available options (This can cause compilation problems)
-#  or use the syntax mentioned earlier to enable the desired options
+# or use the syntax mentioned earlier to enable the desired options
 if((!DISABLE_AUTOCONFIG)); then
   ENABLE_DEBUG=0
   DISABLE_CHECK=1
@@ -203,14 +206,8 @@ build() {
   ((ENABLE_DEBUG)) && msg2 "${_CMAKE_FLAGS[@]}"
   cmake -S "${srcdir}"/$_pkgname -B build \
         "${_CMAKE_FLAGS[@]}"
-  # If not defined, ninja will use all the available CPUs
-  if ((NJOBS)); then
-    msg2 "Using -j$NJOBS for compilation"
-    ninja -j$NJOBS -C build all
-  else
-    msg2 "Using ${MAKEFLAGS} for compilation"
-    ninja $MAKEFLAGS -C build all
-  fi
+  msg2 "Using ${MAKEFLAGS} for compilation"
+  ninja $MAKEFLAGS -C build all
 }
 
 check() {
