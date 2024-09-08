@@ -202,11 +202,11 @@ build() {
         "${_CMAKE_FLAGS[@]}"
   # If not defined, ninja will use all the available CPUs
   if ((NJOBS)); then
-    msg2 "$NJOBS CPUs used for compilation"
+    msg2 "Using -j$NJOBS for compilation"
     ninja -j$NJOBS -C build all
   else
-    msg2 "All CPUs used for compilation"
-    ninja -C build all
+    msg2 "Using  ${MAKEFLAGS} for compilation"
+    ninja ${MAKEFLAGS} -C build all
   fi
 }
 
