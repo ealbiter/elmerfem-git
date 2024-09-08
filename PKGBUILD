@@ -205,8 +205,8 @@ build() {
     msg2 "Using -j$NJOBS for compilation"
     ninja -j$NJOBS -C build all
   else
-    msg2 "Using  ${MAKEFLAGS} for compilation"
-    ninja ${MAKEFLAGS} -C build all
+    msg2 "Using ${MAKEFLAGS} for compilation"
+    ninja $MAKEFLAGS -C build all
   fi
 }
 
