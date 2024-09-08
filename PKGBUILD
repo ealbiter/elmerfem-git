@@ -214,9 +214,9 @@ check() {
 if ((!DISABLE_CHECK)); then
   cd "$srcdir/build"
   export PATH=$PATH:$PWD/fem/src
-  jobs=$(nproc)
+  jobs=$(grep -oP -- "-j\s*\K[0-9]+" <<< "${MAKEFLAGS}")
   ((!DISABLE_MP)) && export OMP_NUM_THREADS=$jobs
-  ctest -j "$((DISABLE_MPI?jobs:jobs/2))" -L quick || ((DISABLE_CHECK)) && true # -LE slow: exclude test with label 'slow'
+  ctest -j "$((DISABLE_MPI?jobs:jobs/2))" -L quick || ((DISABLE_CHECK)) && true # -L quick: use tests with label 'quick'
 fi
 }
 
