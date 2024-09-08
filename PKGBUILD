@@ -42,6 +42,7 @@ if((!DISABLE_AUTOCONFIG)); then
   DISABLE_INTERNAL_ARPACK=1
   DISABLE_TRILINOS=1
   DISABLE_ZOLTAN=1
+  DISABLE_INTERNAL_ZOLTAN=1
 fi
 
 # Use FRAGMENT=#{commit,tag,brach}=xxx for bisect build
@@ -84,8 +85,9 @@ _fragment=${FRAGMENT:-#branch=devel}
 ((DISABLE_MUMPS))    && _use_mumps=OFF    || _use_mumps=ON     # Disable Mumps - gausian elimination LAS solver
 ((DISABLE_HYPRE))    && _use_hypre=OFF    || _use_hypre=ON     # Disable Hypre - multigrid LAS solver
 
-((DISABLE_INTERNAL_UMFPACK)) && _use_external_umfpack=ON || _use_external_umfpack=OFF
-((DISABLE_INTERNAL_ARPACK)) && _use_external_arpack=ON || _use_external_arpack=OFF
+((DISABLE_INTERNAL_UMFPACK)) && _use_external_umfpack=ON || _use_external_umfpack=OFF # Use UMFPACK bundled with suitesparse package
+((DISABLE_INTERNAL_ARPACK))  && _use_external_arpack=ON  || _use_external_arpack=OFF  # Use arpack package
+((DISABLE_INTERNAL_ZOLTAN))  && _use_external_zoltan=ON  || _use_external_zoltan=OFF  # Use Zoltan library bundled with Trilinos
 
 # Disable check
 ((DISABLE_CHECK))    && _disable_check=OFF || _disable_check=ON # Disable CTEST Routines
@@ -103,8 +105,9 @@ _CMAKE_FLAGS+=(
         -DWITH_OCC=${_use_occ}
         -DWITH_CONTRIB=${_use_contrib}
         -DWITH_CHOLMOD=${_use_cholmod}
-        -DWITH_Zoltan=${_use_zoltan}
         -DWITH_NETCDF=${_use_netcfd}
+        -DWITH_Zoltan=${_use_zoltan}
+        -DUSE_SYSTEM_ZOLTAN=${_use_external_zoltan}
 
         -DWITH_ELMERGUI=${_use_elmergui}
         -DWITH_QT5=${_use_elmergui}
@@ -124,10 +127,6 @@ _CMAKE_FLAGS+=(
 
         -GNinja
 )
-# Always use system-provided library
-((!DISABLE_ZOLTAN))     && _CMAKE_FLAGS+=(
-                                  -DUSE_SYSTEM_ZOLTAN=ON
-                                  )
 ((!DISABLE_ELMERICE))   && _CMAKE_FLAGS+=(
                                   -DWITH_ScatteredDataInterpolator=ON
                                   )
@@ -157,11 +156,11 @@ conflicts=('elmerfem')
 ((!DISABLE_QWT))             && depends+=('qwt')
 ((!DISABLE_MPI))             && depends+=('openmpi')
 if((!DISABLE_NETCFD)); then
-  ((!DISABLE_MPI))             && depends+=('netcdf-fortran-openmpi' 'hdf5-openmpi') || depends+=('netcdf-fortran' 'hdf5')
+  ((!DISABLE_MPI))           && depends+=('netcdf-fortran-openmpi' 'hdf5-openmpi') || depends+=('netcdf-fortran' 'hdf5')
 fi
 ((!DISABLE_MP))              && depends+=('openmp')
 ((!DISABLE_PARAVIEW))        && depends+=('paraview')
-((!DISABLE_OCC))             && depends+=('opencascade')  # opencascade
+((!DISABLE_OCC))             && depends+=('opencascade')
 #VTK deps
 ((!DISABLE_VTK))             && depends+=('vtk' 'tbb' 'freetype2' 'qt5-base' 'fmt' 'glew' 'pugixml' \
                                             'libxcursor' 'mariadb-libs' 'postgresql-libs' 'jdk11-openjdk')
@@ -169,7 +168,7 @@ fi
                                         'liblas' 'adios2' 'libharu' 'cgns' 'eigen' 'utf8cpp' 'fast_float')
 # AUR
 ((!DISABLE_MMG))             && depends+=('mmg')
-((!DISABLE_TRILINOS || !DISABLE_ZOLTAN))        && depends+=('trilinos')
+((!DISABLE_TRILINOS || (!DISABLE_ZOLTAN && USE_SYSTEM_ZOLTAN) ))        && depends+=('trilinos')
 ((!DISABLE_MUMPS))           && depends+=('mumps')
 ((!DISABLE_HYPRE))           && depends+=('hypre')
 
@@ -187,6 +186,10 @@ pkgver() {
 }
 
 prepare() {
+  if((!USE_SYSTEM_ZOLTAN)); then
+    cd "$srcdir/$_pkgname"
+    git submodule update --init --recursive
+  fi
   cd "$srcdir"
   if((!DISABLE_VTK)); then
      sed -i \
