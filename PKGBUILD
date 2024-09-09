@@ -189,7 +189,7 @@ pkgver() {
 }
 
 prepare() {
-  if((!USE_SYSTEM_ZOLTAN)); then
+  if((!DISABLE_INTERNAL_ZOLTAN && !DISABLE_ZOLTAN)); then
     cd "$srcdir/$_pkgname"
     git submodule update --init --recursive
   fi
