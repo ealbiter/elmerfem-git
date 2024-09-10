@@ -206,7 +206,7 @@ build() {
   ((ENABLE_DEBUG)) && msg2 "${_CMAKE_FLAGS[@]}"
   cmake -S "${srcdir}"/$_pkgname -B build \
         "${_CMAKE_FLAGS[@]}"
-  msg2 "Using ${MAKEFLAGS} for compilation"
+  msg2 "Using $(grep -oP -- "-j\s*\K[0-9]+" <<< "${MAKEFLAGS}") jobs for compilation"
   ninja $MAKEFLAGS -C build all
 }
 
