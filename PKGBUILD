@@ -34,7 +34,7 @@ if((!DISABLE_AUTOCONFIG)); then
   DISABLE_QWT=0
   DISABLE_CHOLMOD=0
   DISABLE_NETCFD=0
-  #DISABLE_ROCALUTION
+  DISABLE_ROCALUTION=0
   DISABLE_OCC=1
   DISABLE_VTK=1
   DISABLE_MPI=0
@@ -43,7 +43,8 @@ if((!DISABLE_AUTOCONFIG)); then
   #AUR packages
   DISABLE_TRILINOS=1
   DISABLE_ZOLTAN=1
-  DISABLE_INTERNAL_ZOLTAN=1
+  #Using external Zoltan is currently broken
+  DISABLE_INTERNAL_ZOLTAN=0
   DISABLE_MUMPS=1
   DISABLE_HYPRE=1
 fi
@@ -67,6 +68,7 @@ _fragment=${FRAGMENT:-#branch=devel}
 ((DISABLE_CHOLMOD))   && _use_cholmod=OFF  || _use_cholmod=ON   # Use CHOLMOD linear algebra library
 ((DISABLE_ZOLTAN))    && _use_zoltan=OFF   || _use_zoltan=ON    # Use Zoltan mesh repartitioning library
 ((DISABLE_NETCFD))    && _use_netcfd=OFF   || _use_netcfd=ON    # Use NetCDF (Network Common Data Form)
+((DISABLE_ROCALUTION))&& _use_rocalution=OFF || _use_rocalution=ON #
 
 ((DISABLE_ELMERICE)) && _use_elmerice=OFF || _use_elmerice=ON  # Disable ElmerICE - glacier melting solver
 ((!DISABLE_ELMERICE)) && eval DISABLE_{INTERNAL_UMFPACK,MPI}=0 #Elmer Ice requires MPI and uses the internal UMFPack
@@ -107,6 +109,7 @@ _CMAKE_FLAGS+=(
         -DWITH_CHOLMOD=${_use_cholmod}
         -DWITH_NETCDF=${_use_netcfd}
         -DWITH_Zoltan=${_use_zoltan}
+        -DWITH_ROCALUTION=${_use_rocalution}
 
         -DWITH_ELMERGUI=${_use_elmergui}
         -DWITH_QT5=${_use_elmergui}
