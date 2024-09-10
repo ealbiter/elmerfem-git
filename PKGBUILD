@@ -92,9 +92,6 @@ _fragment=${FRAGMENT:-#branch=devel}
 ((DISABLE_INTERNAL_ARPACK))  && _use_external_arpack=ON  || _use_external_arpack=OFF  # Use arpack package
 ((DISABLE_INTERNAL_ZOLTAN))  && _use_external_zoltan=ON  || _use_external_zoltan=OFF  # Use Zoltan library bundled with Trilinos
 
-# Disable check
-((DISABLE_CHECK))    && _disable_check=OFF || _disable_check=ON # Disable CTEST Routines
-
 _CMAKE_FLAGS+=(
         -DCMAKE_BUILD_TYPE=${_build_type}
         -DCMAKE_INSTALL_PREFIX=/usr
