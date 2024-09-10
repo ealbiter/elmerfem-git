@@ -107,7 +107,6 @@ _CMAKE_FLAGS+=(
         -DWITH_CHOLMOD=${_use_cholmod}
         -DWITH_NETCDF=${_use_netcfd}
         -DWITH_Zoltan=${_use_zoltan}
-        -DUSE_SYSTEM_ZOLTAN=${_use_external_zoltan}
 
         -DWITH_ELMERGUI=${_use_elmergui}
         -DWITH_QT5=${_use_elmergui}
@@ -129,6 +128,9 @@ _CMAKE_FLAGS+=(
 )
 ((!DISABLE_ELMERICE))   && _CMAKE_FLAGS+=(
                                   -DWITH_ScatteredDataInterpolator=ON
+                                  )
+((!DISABLE_ZOLTAN))     && _CMAKE_FLAGS+=(
+                                  -DUSE_SYSTEM_ZOLTAN=${_use_external_zoltan}
                                   )
 pkgname=elmerfem-git
 _pkgname=elmerfem
