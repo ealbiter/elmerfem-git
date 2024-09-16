@@ -173,7 +173,7 @@ fi
                                         'liblas' 'adios2' 'libharu' 'cgns' 'eigen' 'utf8cpp' 'fast_float')
 # AUR
 ((!DISABLE_MMG))             && depends+=('mmg')
-((!DISABLE_TRILINOS || (!DISABLE_ZOLTAN && USE_SYSTEM_ZOLTAN) ))        && depends+=('trilinos')
+((!DISABLE_TRILINOS || (!DISABLE_ZOLTAN && DISABLE_INTERNAL_ZOLTAN) ))        && depends+=('trilinos')
 ((!DISABLE_MUMPS))           && depends+=('mumps')
 ((!DISABLE_HYPRE))           && depends+=('hypre')
 
