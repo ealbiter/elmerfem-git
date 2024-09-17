@@ -137,7 +137,7 @@ _CMAKE_FLAGS+=(
                                   )
 pkgname=elmerfem-git
 _pkgname=elmerfem
-pkgver=9.0.r3132.g30dfce537
+pkgver=9.0.r3153.g3c645863e
 pkgrel=1
 pkgdesc="A finite element software for multiphysical problems"
 arch=('x86_64')
@@ -191,6 +191,9 @@ pkgver() {
 }
 
 prepare() {
+  #for patch in "${srcdir}"/*.patch
+  #  do msg2 "Apply: ${patch##*/}"; git apply -v "$patch"
+  #done
   if((!DISABLE_INTERNAL_ZOLTAN && !DISABLE_ZOLTAN)); then
     cd "$srcdir/$_pkgname"
     git submodule update --init --recursive
