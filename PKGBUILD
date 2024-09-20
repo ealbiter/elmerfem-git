@@ -34,7 +34,7 @@ if((!DISABLE_AUTOCONFIG)); then
   DISABLE_QWT=0
   DISABLE_CHOLMOD=0
   DISABLE_NETCFD=0
-  DISABLE_ROCALUTION=1
+  DISABLE_ROCALUTION=0
   DISABLE_OCC=1
   DISABLE_VTK=1
   DISABLE_MPI=0
@@ -137,7 +137,7 @@ _CMAKE_FLAGS+=(
                                   )
 pkgname=elmerfem-git
 _pkgname=elmerfem
-pkgver=9.0.r3153.g3c645863e
+pkgver=9.0.r3173.g73966f846
 pkgrel=1
 pkgdesc="A finite element software for multiphysical problems"
 arch=('x86_64')
@@ -166,6 +166,7 @@ fi
 ((!DISABLE_MP))              && depends+=('openmp')
 ((!DISABLE_PARAVIEW))        && depends+=('paraview')
 ((!DISABLE_OCC))             && depends+=('opencascade')
+((!DISABLE_ROCALUTION))      && depends+=('rocalution')
 #VTK deps
 ((!DISABLE_VTK))             && depends+=('vtk' 'tbb' 'freetype2' 'qt5-base' 'fmt' 'glew' 'pugixml' \
                                             'libxcursor' 'mariadb-libs' 'postgresql-libs' 'jdk11-openjdk')
