@@ -182,22 +182,20 @@ options=(!emptydirs !staticlibs)
 ((ENABLE_DEBUG))      && options+=(debug !strip)
 
 source=("git+https://github.com/ElmerCSC/elmerfem.git${_fragment}"
-        "$_pkgname.desktop"
-        'occ_v7.8.patch::https://github.com/ElmerCSC/elmerfem/pull/577/commits/14c5a3727c697c8814d28f79053fdd773b6495d6.patch')
+        "$_pkgname.desktop")
 
 sha256sums=('SKIP'
-            'f4b39389e5f258c7860b8d7a6b171fb54bf849dc772f640ac5e7a12c7a384aca'
-            'c1204a42bb480537f868ede88db64c33dbeacce687108e4088810628024d5aed')
+            'f4b39389e5f258c7860b8d7a6b171fb54bf849dc772f640ac5e7a12c7a384aca')
 
 pkgver() {
   git -C "${srcdir}/${_pkgname}" describe --long --tag| sed -r 's/^release-//;s/([^-]*-g)/r\1/;s/-/./g'
 }
 
 prepare() {
-  cd "${srcdir}"/$_pkgname
-  for patch in "${srcdir}"/*.patch
-    do msg2 "Apply: ${patch##*/}"; git apply -v "$patch"
-  done
+  #cd "${srcdir}"/$_pkgname
+  #for patch in "${srcdir}"/*.patch
+  #  do msg2 "Apply: ${patch##*/}"; git apply -v "$patch"
+  #done
   if((!DISABLE_INTERNAL_ZOLTAN && !DISABLE_ZOLTAN)); then
     cd "$srcdir/$_pkgname"
     git submodule update --init --recursive
